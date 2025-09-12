@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: genz-translator-db
+    environment:
+      POSTGRES_DB: genz_translator
+      POSTGRES_USER: genz_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - genz-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genz_user -d genz_translator"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Spring Boot Backend API
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: genz-translator-api
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/genz_translator
+      - SPRING_DATASOURCE_USERNAME=genz_
