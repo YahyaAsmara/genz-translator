@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: genz-translator
+  
+  datasource:
+    url: jdbc:postgresql://database:5432/genz_translator
+    username: genz_user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  web:
+    cors:
+      allowed-origins: 
+        - http://localhost:3000
+        - http://frontend:3000
+      allowed-methods: 
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+
+logging:
+  level:
+    com.genz.translator: DEBUG
+    org.springframework.web: DEBUG
