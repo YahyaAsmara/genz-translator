@@ -32,4 +32,49 @@ services:
     container_name: genz-translator-api
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/genz_translator
-      - SPRING_DATASOURCE_USERNAME=genz_
+      - SPRING_DATASOURCE_USERNAME=genz_user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - genz-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: genz-translator-ui
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api
+      - REACT_APP_BACKEND_URL=http://backend:8080/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - genz-network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+networks:
+  genz-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
