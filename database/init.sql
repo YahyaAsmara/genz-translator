@@ -9,7 +9,7 @@ GRANT ALL PRIVILEGES ON DATABASE genz_translator TO genz_user;
 */
 
 -- Grant schema privileges
-GRANT ALL ON SCHEMA public TO genz_user;
+GRANT ALL ON SCHEMA public TO genz_database_user;
 
 -- Create tables
 CREATE TABLE terms (
@@ -132,8 +132,8 @@ CREATE TRIGGER update_terms_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Grant all privileges to the user
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO genz_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO genz_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO genz_database_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO genz_database_user;
 
 -- Verify data insertion
 SELECT 'Total terms inserted: ' || COUNT(*) as result FROM terms;
