@@ -37,6 +37,7 @@ CREATE INDEX idx_terms_popularity ON terms(popularity_score DESC);
 CREATE INDEX idx_history_created_at ON translation_history(created_at DESC);
 
 -- Insert initial Gen Z terms data
+
 INSERT INTO terms (genz_text, translation, category, popularity_score) VALUES
 -- Slang & Expressions
 ('no cap', 'no lie', 'slang', 50),
@@ -106,7 +107,8 @@ INSERT INTO terms (genz_text, translation, category, popularity_score) VALUES
 ('no cap fr', 'no lie, for real', 'combination', 15),
 ('fr fr', 'for real, for real', 'combination', 25),
 ('ngl bestie', 'not going to lie, best friend', 'combination', 10),
-('periodt slay', 'period (end of discussion), do it excellently', 'combination', 8);
+('periodt slay', 'period (end of discussion), do it excellently', 'combination', 8)
+ON CONFLICT (genz_text) DO NOTHING;
 
 -- Insert some sample translation history
 INSERT INTO translation_history (original_text, translated_text, terms_found) VALUES
