@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Minimal base styles for Gen Z Translator */
 body {
 	margin: 0;
