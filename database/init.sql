@@ -1,3 +1,4 @@
+/* DATABASE IS IN RENDER
 -- Create the database and user
 CREATE USER genz_user WITH PASSWORD 'password';
 CREATE DATABASE genz_translator OWNER genz_user;
@@ -5,6 +6,7 @@ GRANT ALL PRIVILEGES ON DATABASE genz_translator TO genz_user;
 
 -- Connect to the new database
 \c genz_translator;
+*/
 
 -- Grant schema privileges
 GRANT ALL ON SCHEMA public TO genz_user;
