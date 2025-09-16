@@ -397,11 +397,11 @@ docker-compose logs -f database | grep "LOG:"
 ### Docker Hub Deployment
 ```bash
 # Build and push images
-docker build -t yahyaasmara/genz-translator-frontend frontend/
-docker build -t yahyaasmara/genz-translator-backend backend/
+docker build -t your-username/genz-translator-frontend frontend/
+docker build -t your-username/genz-translator-backend backend/
 
-docker push yahyaasmara/genz-translator-frontend
-docker push yahyaasmara/genz-translator-backend
+docker push your-username/genz-translator-frontend
+docker push your-username/genz-translator-backend
 ```
 
 ### Cloud Deployment (AWS/GCP/Azure)
