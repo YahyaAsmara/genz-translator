@@ -2,8 +2,6 @@
 
 A full-stack web application that translates Gen Z slang, abbreviations, and expressions into clear, understandable language. Built with React, Spring Boot, PostgreSQL, and Docker.
 
-![Gen Z Translator Demo](https://via.placeholder.com/800x400/6366f1/ffffff?text=Gen+Z+Translator+Demo)
-
 ## 🌟 Features
 
 ### Core Translation Engine
@@ -449,10 +447,6 @@ docker push yourusername/genz-translator-backend
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/yahyaasmara/genz-translator/issues)
-
 ## 🙏 Acknowledgments
 
 - **Gen Z Community** - for creating such creative language expressions
@@ -460,7 +454,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **React Team** - for the excellent frontend library
 - **PostgreSQL** - for reliable data storage
 - **Docker** - for containerization magic
-
----
-
-**Built with ❤️ by developers who definitely needed this translator themselves! No cap! 🚀**
