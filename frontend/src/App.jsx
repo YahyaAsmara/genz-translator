@@ -122,8 +122,8 @@ export default function GenZTranslatorApp() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans flex items-center justify-center">
-      <div className="w-full max-w-xl p-6">
+    <div className="min-h-screen bg-black text-white" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
+      <div className="w-full max-w-xl p-6 mx-auto flex flex-col min-h-screen justify-center">
         <h1 className="text-3xl font-bold text-center mb-8">Gen Z → Human Translator</h1>
         <div className="mb-6">
           <textarea
@@ -133,24 +133,27 @@ export default function GenZTranslatorApp() {
             className="w-full p-4 rounded bg-zinc-900 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none mb-4"
             rows={3}
             disabled={apiStatus === 'disconnected'}
+            style={{ fontFamily: "'Nunito Sans', sans-serif" }}
           />
           <div className="flex gap-2">
             <button
               onClick={handleTranslate}
               disabled={!inputText.trim() || isLoading || apiStatus === 'disconnected'}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-zinc-700 disabled:cursor-not-allowed"
+              style={{ fontFamily: "'Nunito Sans', sans-serif" }}
             >
               {isLoading ? "Translating..." : "Translate"}
             </button>
             <button
               onClick={handleClear}
               className="flex-1 px-4 py-2 bg-zinc-700 text-white rounded hover:bg-zinc-600"
+              style={{ fontFamily: "'Nunito Sans', sans-serif" }}
             >
               Clear
             </button>
           </div>
         </div>
-        <div className="rounded bg-zinc-900 border border-zinc-700 p-4 min-h-[80px]">
+        <div className="rounded bg-zinc-900 border border-zinc-700 p-4 min-h-[80px]" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>
           <div className="text-sm text-zinc-400 mb-2">Translation:</div>
           <div className="text-lg font-medium text-white min-h-[32px]">{translatedText || <span className="text-zinc-500 italic">Your translation will appear here.</span>}</div>
         </div>
@@ -159,6 +162,11 @@ export default function GenZTranslatorApp() {
             {error}
           </div>
         )}
+        {/* API Section */}
+        <div className="mt-8 text-center text-zinc-400 text-xs">
+          <div className="mb-1">API Status: <span className={apiStatus === 'connected' ? 'text-green-400' : apiStatus === 'disconnected' ? 'text-red-400' : 'text-yellow-400'}>{apiStatus}</span></div>
+          <div>API Endpoint: <span className="font-mono text-zinc-300">{process.env.REACT_APP_API_URL || 'http://localhost:8080/api'}</span></div>
+        </div>
       </div>
     </div>
   );
