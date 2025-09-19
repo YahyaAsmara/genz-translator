@@ -2,6 +2,8 @@
 
 A web app that translates Gen Z slang into standard English. Built with React, Spring Boot, PostgreSQL, and Docker.
 
+![Gen Z App](frontend/images/genz_app.png "Gen Z App")
+
 ## Quick Start
 
 ```bash
