@@ -5,11 +5,11 @@
 /* Minimal base styles for Gen Z Translator */
 body {
 	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+	font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
 		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
 		sans-serif;
-	background: #f8fafc;
-	color: #22223b;
+	background: #000;
+	color: #f3f3f3;
 }
 
 #root {
