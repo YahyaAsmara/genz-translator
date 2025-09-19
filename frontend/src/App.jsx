@@ -8,6 +8,11 @@ function TranslationCard({ title, text, bgColor }) {
       <h3 className="font-semibold text-gray-700 mb-3">{title}</h3>
       <div className="text-gray-800 leading-relaxed">
         {text || <span className="text-gray-400 italic">Enter some Gen Z text to translate...</span>}
+        {/* API Section */}
+        <div className="mt-8 text-center text-zinc-400 text-xs">
+          <div className="mb-1">API Status: <span className={apiStatus === 'connected' ? 'text-green-400' : apiStatus === 'disconnected' ? 'text-red-400' : 'text-yellow-400'}>{apiStatus}</span></div>
+          <div>API Endpoint: <span className="font-mono text-zinc-300">{process.env.REACT_APP_API_URL || 'http://localhost:8080/api'}</span></div>
+        </div>
       </div>
     </div>
   );
