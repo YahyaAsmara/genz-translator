@@ -16,16 +16,11 @@ services:
   frontend:
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:8080/api
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - /app/node_modules
-    command: ["npm", "start"]
+      - REACT_APP_API_URL=/api
 
   database:
     environment:
-      - POSTGRES_DB=genz_translator_dev
+      - POSTGRES_DB=genz_translator
     ports:
       - "5432:5432"
     volumes:

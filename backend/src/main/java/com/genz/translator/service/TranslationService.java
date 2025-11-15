@@ -53,7 +53,7 @@ public class TranslationService {
         }
 
         // Save translation history
-        TranslationHistory history = new TranslationHistory(originalText, translatedText);
+        TranslationHistory history = new TranslationHistory(originalText, translatedText, termsFound);
         translationHistoryRepository.save(history);
 
         return new TranslationResponse(originalText, translatedText, termsFound);

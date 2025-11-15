@@ -4,23 +4,25 @@ import { translationAPI } from '../services/api';
 export const useTranslation = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [apiStatus, setApiStatus] = useState('unknown'); // 'connected', 'disconnected', 'unknown'
+  const [apiStatus, setApiStatus] = useState('checking'); // 'connected', 'disconnected', 'checking'
 
-  // Check API health on mount
-  useEffect(() => {
-    const checkApiHealth = async () => {
-      try {
-        await translationAPI.healthCheck();
-        setApiStatus('connected');
-        console.log('✅ API is connected');
-      } catch (error) {
-        setApiStatus('disconnected');
-        console.log('❌ API is disconnected');
-      }
-    };
-
-    checkApiHealth();
+  const checkApiHealth = useCallback(async () => {
+    try {
+      await translationAPI.healthCheck();
+      setApiStatus('connected');
+      console.log('✅ API is connected');
+    } catch (error) {
+      setApiStatus('disconnected');
+      console.log('❌ API is disconnected');
+    }
   }, []);
+
+  // Check API health on mount + poll periodically so UI recovers automatically
+  useEffect(() => {
+    checkApiHealth();
+    const interval = setInterval(checkApiHealth, 15000);
+    return () => clearInterval(interval);
+  }, [checkApiHealth]);
 
   const translate = useCallback(async (text) => {
     if (!text.trim()) return null;
@@ -36,11 +38,12 @@ export const useTranslation = () => {
       console.error('Translation error:', error);
       setError(error.message || 'Translation failed');
       setApiStatus('disconnected');
+      checkApiHealth();
       throw error;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [checkApiHealth]);
 
   const getTerms = useCallback(async () => {
     setIsLoading(true);
@@ -54,11 +57,12 @@ export const useTranslation = () => {
       console.error('Get terms error:', error);
       setError(error.message || 'Failed to fetch terms');
       setApiStatus('disconnected');
+      checkApiHealth();
       throw error;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [checkApiHealth]);
 
   const getHistory = useCallback(async (limit = 10) => {
     setIsLoading(true);
@@ -72,11 +76,12 @@ export const useTranslation = () => {
       console.error('Get history error:', error);
       setError(error.message || 'Failed to fetch history');
       setApiStatus('disconnected');
+      checkApiHealth();
       throw error;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [checkApiHealth]);
 
   return {
     translate,

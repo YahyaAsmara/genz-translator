@@ -1,15 +1,21 @@
-/* DATABASE IS IN RENDER
--- Create the database and user
-CREATE USER genz_user WITH PASSWORD 'password';
-CREATE DATABASE genz_translator OWNER genz_user;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'genz_user') THEN
+        CREATE ROLE genz_user LOGIN PASSWORD 'password';
+    END IF;
+END;
+$$;
+
+SELECT 'CREATE DATABASE genz_translator OWNER genz_user'
+WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'genz_translator')
+\gexec
+
 GRANT ALL PRIVILEGES ON DATABASE genz_translator TO genz_user;
 
--- Connect to the new database
 \c genz_translator;
-*/
 
 -- Grant schema privileges
-GRANT ALL ON SCHEMA public TO genz_database_user;
+GRANT ALL ON SCHEMA public TO genz_user;
 
 -- Create tables
 CREATE TABLE terms (
@@ -26,7 +32,67 @@ CREATE TABLE translation_history (
     id SERIAL PRIMARY KEY,
     original_text TEXT NOT NULL,
     translated_text TEXT NOT NULL,
-    terms_found TEXT[], -- Array of terms that were translated
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE translation_history_terms (
+    history_id INTEGER REFERENCES translation_history(id) ON DELETE CASCADE,
+    term TEXT NOT NULL,
+    PRIMARY KEY (history_id, term)
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(160) NOT NULL UNIQUE,
+    handle VARCHAR(64) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    persona_tag VARCHAR(80),
+    accent_color VARCHAR(12),
+    bio TEXT,
+    streak_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP
+);
+
+CREATE TABLE user_roles (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(50) NOT NULL,
+    PRIMARY KEY (user_id, role)
+);
+
+CREATE TABLE vibe_posts (
+    id SERIAL PRIMARY KEY,
+    author_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    original_text TEXT NOT NULL,
+    translated_text TEXT NOT NULL,
+    insight TEXT,
+    persona_tag VARCHAR(80),
+    accent_color VARCHAR(12),
+    visibility VARCHAR(20) DEFAULT 'PUBLIC',
+    remix_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vibe_tags (
+    vibe_id INTEGER REFERENCES vibe_posts(id) ON DELETE CASCADE,
+    tag VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE vibe_pulses (
+    id SERIAL PRIMARY KEY,
+    vibe_id INTEGER NOT NULL REFERENCES vibe_posts(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    pulse_type VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(vibe_id, user_id, pulse_type)
+);
+
+CREATE TABLE remix_threads (
+    id SERIAL PRIMARY KEY,
+    vibe_id INTEGER NOT NULL REFERENCES vibe_posts(id) ON DELETE CASCADE,
+    author_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    remix_text TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -110,14 +176,6 @@ INSERT INTO terms (genz_text, translation, category, popularity_score) VALUES
 ('periodt slay', 'period (end of discussion), do it excellently', 'combination', 8)
 ON CONFLICT (genz_text) DO NOTHING;
 
--- Insert some sample translation history
-INSERT INTO translation_history (original_text, translated_text, terms_found) VALUES
-('no cap this app is bussin fr', 'No lie this app is really good (usually food) for real', ARRAY['no cap', 'bussin', 'fr']),
-('periodt bestie, say less', 'Period (end of discussion) best friend, I understand/agreed', ARRAY['periodt', 'bestie', 'say less']),
-('this song slaps ngl', 'This song is really good (usually music) not going to lie', ARRAY['slaps', 'ngl']),
-('lowkey sus but valid', 'Somewhat/kind of suspicious but legitimate/acceptable', ARRAY['lowkey', 'sus', 'valid']),
-('it''s giving main character energy', 'It shows/displays confident, self-assured behavior', ARRAY['it''s giving', 'main character energy']);
-
 -- Create a function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -134,8 +192,8 @@ CREATE TRIGGER update_terms_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Grant all privileges to the user
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO genz_database_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO genz_database_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO genz_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO genz_user;
 
 -- Verify data insertion
 SELECT 'Total terms inserted: ' || COUNT(*) as result FROM terms;

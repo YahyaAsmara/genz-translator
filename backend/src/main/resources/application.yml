@@ -6,7 +6,7 @@ spring:
     name: genz-translator
   
   datasource:
-    url: jdbc:postgresql://database:5432/genz_translator
+    url: jdbc:postgresql://localhost:5432/genz_translator
     username: genz_user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -38,3 +38,10 @@ logging:
   level:
     com.genz.translator: DEBUG
     org.springframework.web: DEBUG
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:Z2VuWlRva2VuQmFja2VkQnk1M0NoYXQ1U3VyZVNlY3VyZVBocmFzZQ==}
+    expiration: 3600000
+    refresh-expiration: 604800000
+    issuer: genz-translator
